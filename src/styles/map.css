@@ -1,0 +1,485 @@
+.mapview {
+  position: relative;
+  background: var(--bg0);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mapview svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.mapview svg.is-panning {
+  cursor: grabbing;
+}
+
+/* frame chrome */
+
+.mv-frame-tick {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.mapview-note {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.mapview-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  display: flex;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+  background: rgba(9, 12, 18, 0.82);
+  border: 1px solid var(--line);
+  padding: 5px 10px;
+  pointer-events: none;
+}
+
+.lg-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lg-item svg {
+  width: 26px;
+  height: 8px;
+  cursor: default;
+}
+
+.lg-route {
+  stroke: var(--cyan);
+  stroke-width: 2.4;
+}
+
+.lg-link {
+  stroke: var(--cyan-dim);
+  stroke-width: 1.4;
+}
+
+.lg-storm {
+  stroke: var(--amber);
+  stroke-width: 1.4;
+}
+
+.lg-blocked {
+  stroke: #8a4040;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+}
+
+.mapview-zoom {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mapview-zoom button {
+  width: 30px;
+  height: 26px;
+  background: rgba(13, 17, 25, 0.9);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.mapview-zoom button:hover:not(:disabled) {
+  border-color: var(--cyan-dim);
+  color: var(--text);
+}
+
+.mapview-zoom button:last-child {
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+/* rings & tracks */
+
+.mv-ring {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.mv-ring-moon-track {
+  stroke-dasharray: 2 5;
+  stroke: var(--line-strong);
+}
+
+.mv-ring.is-ghost {
+  stroke: var(--cyan-dim);
+  stroke-dasharray: 4 4;
+}
+
+.mv-ring-label {
+  fill: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+}
+
+.mv-transfer-track {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  stroke-dasharray: 1.5 6;
+}
+
+.mv-trail {
+  fill: none;
+  stroke: var(--cyan-dim);
+  stroke-width: 1.1;
+  opacity: 0.34;
+  stroke-linecap: round;
+}
+
+/* bodies */
+
+.mv-body-shade {
+  fill: #02040750;
+  fill-opacity: 0.55;
+}
+
+.mv-body-limb {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 0.8;
+}
+
+.mv-body-tick {
+  stroke: var(--text-faint);
+  stroke-width: 1.2;
+}
+
+.mv-body-label {
+  fill: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+}
+
+/* links */
+
+.mv-link {
+  cursor: pointer;
+}
+
+.mv-link-hit {
+  stroke: transparent;
+  stroke-width: 13;
+}
+
+.mv-link-line {
+  stroke: var(--cyan-dim);
+  opacity: 0.75;
+}
+
+.mv-link.is-thin .mv-link-line {
+  opacity: 0.45;
+}
+
+.mv-link.is-storm .mv-link-line {
+  stroke: var(--amber);
+  opacity: 0.7;
+}
+
+.mv-link.is-blocked .mv-link-line {
+  stroke: #8a4040;
+  stroke-dasharray: 3 4;
+  opacity: 0.8;
+}
+
+.mv-link:hover .mv-link-line,
+.mv-link.is-emph .mv-link-line {
+  opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(100, 199, 232, 0.35));
+}
+
+.mv-link.is-selected .mv-link-line {
+  opacity: 1;
+  stroke: #a8e0f5;
+}
+
+.mv-link.is-blocked.is-selected .mv-link-line {
+  stroke: var(--red);
+}
+
+.mv-link-storm {
+  fill: var(--amber);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.mv-link-cross {
+  fill: var(--red);
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.mv-link-chip rect {
+  fill: rgba(9, 12, 18, 0.92);
+  stroke: var(--line-strong);
+}
+
+.mv-link-chip text {
+  fill: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+}
+
+.mv-route {
+  stroke: var(--cyan);
+  stroke-width: 2.6;
+  opacity: 0.92;
+  stroke-dasharray: 9 5;
+  pointer-events: none;
+  animation: route-flow 1.1s linear infinite;
+}
+
+@keyframes route-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+/* assets */
+
+.mv-asset {
+  cursor: pointer;
+}
+
+.mv-asset-hit {
+  fill: transparent;
+}
+
+.glyph-hull {
+  fill: var(--bg2);
+  stroke: var(--text-dim);
+  stroke-width: 1.3;
+}
+
+.glyph-wing {
+  fill: var(--bg3);
+  stroke: var(--text-faint);
+  stroke-width: 0.9;
+}
+
+.glyph-line {
+  fill: none;
+  stroke: var(--text-dim);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+.mv-asset:hover .glyph-hull,
+.mv-asset:hover .glyph-line {
+  stroke: var(--text);
+}
+
+.mv-asset-relay .glyph-hull {
+  stroke: var(--cyan);
+}
+
+.mv-asset-ship .glyph-hull {
+  stroke: var(--amber);
+}
+
+.mv-asset.is-selected .glyph-hull {
+  stroke: #ffffff;
+  fill: var(--bg3);
+}
+
+.mv-asset.is-disabled {
+  opacity: 0.5;
+}
+
+.mv-asset-slash {
+  stroke: var(--red);
+  stroke-width: 1.4;
+}
+
+.mv-asset-userring {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.8;
+}
+
+.mv-asset-label {
+  fill: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  paint-order: stroke;
+  stroke: rgba(5, 7, 11, 0.85);
+  stroke-width: 3;
+}
+
+.mv-asset:hover .mv-asset-label,
+.mv-asset.is-selected .mv-asset-label {
+  fill: var(--text);
+}
+
+.mv-noroute path {
+  fill: var(--red);
+}
+
+.mv-noroute rect {
+  fill: var(--bg0);
+}
+
+.mv-asset.is-noroute .glyph-hull {
+  stroke: var(--red);
+}
+
+.mv-reticle {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1.2;
+  opacity: 0.9;
+}
+
+/* ghost preview */
+
+.mv-ghost-ring {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-dasharray: 2 3;
+  animation: ghost-pulse 1.6s ease-in-out infinite;
+}
+
+.mv-ghost-hull {
+  fill: rgba(100, 199, 232, 0.25);
+  stroke: var(--cyan);
+  stroke-width: 1;
+}
+
+.mv-ghost-label {
+  fill: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+}
+
+@keyframes ghost-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* sun + storm */
+
+.mv-sun-disc {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 1.4;
+}
+
+.mv-sun-ray {
+  stroke: var(--amber);
+  color: var(--amber);
+  stroke-width: 1.2;
+}
+
+.mv-sun-label {
+  fill: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+}
+
+.mv-stormray {
+  stroke: var(--amber);
+  stroke-width: 1;
+  stroke-dasharray: 14 22;
+  opacity: 0.5;
+  animation: storm-drift 2.8s linear infinite;
+}
+
+@keyframes storm-drift {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+.mapview-status {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  display: flex;
+  border: 1px solid var(--line);
+  background: rgba(9, 12, 18, 0.85);
+  pointer-events: none;
+}
+
+.ms-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 12px 7px;
+  border-right: 1px solid var(--line);
+}
+
+.ms-item:last-child {
+  border-right: none;
+}
+
+.ms-key {
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+}
+
+.ms-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.ms-item.is-alarm .ms-val {
+  color: var(--red);
+}
+
+.ms-item.is-storm .ms-key,
+.ms-item.is-storm .ms-val {
+  color: var(--amber);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mv-route,
+  .mv-stormray,
+  .mv-ghost-ring {
+    animation: none;
+  }
+}
